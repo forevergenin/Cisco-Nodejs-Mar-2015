@@ -1,6 +1,11 @@
 var	url = require("url"),
 	qs = require('querystring');
 
+function f(){
+
+}
+var cache = {}
+
 module.exports = function(req, res, next){
 	req.url = url.parse(req.url, false);
 	req.query = qs.parse(req.url.query);
