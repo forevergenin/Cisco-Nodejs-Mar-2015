@@ -14,7 +14,7 @@ function generateUUID(){
 
 function createNewSession(req, res){
 	var newSessionId = generateUUID();
-	sessionStore[newSessionId] = {};
+	sessionStore[newSessionId] = {store : {}, timeStamp : new Date()};
 	res.cookie("sessionId", newSessionId);
 	return newSessionId;
 }
@@ -32,6 +32,8 @@ function getCurrentSessionId(req,res){
 }
 
 module.exports = function(req,res,next){
-	req.session = sessionStore[getCurrentSessionId(req,res)];
+	var currentSession = sessionStore[getCurrentSessionId(req,res)];
+	currentSession.timeStamp = new Date();
+	req.session = currentSession.store;
 	next();
 }
