@@ -15,17 +15,24 @@ router.get('/', function(req, res, next) {
     }); 
 });
 
-router.get('/new', function(){
-
+router.get('/new', function(req,res,next){
+	res.render('bugs/new');
 })
 
-router.post('/new', function(){
-	//req.body will have the data
-})
-
-router.get('/add', function(req,res,next){
-	res.send("A new user has to be added here");
+router.post('/new', function(req, res, next){
+	var newBugTitle = req.body.bugTitle;
+	var newBugId = bugsRepository.reduce(function(currId, bug){
+		return currId > bug.id ? currId : bug.id;
+	}, 0) + 1;
+	var newBug = {
+		id : newBugId,
+		title : newBugTitle,
+		isClosed : false
+	};
+	bugsRepository.push(newBug);
+	res.redirect('/bugs/');
 });
+
 
 router.get('/remove', function(req,res,next){
 	res.send("An existing user will be removed here");
