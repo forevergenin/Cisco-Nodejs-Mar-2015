@@ -85,9 +85,67 @@ print("Sorting", function(){
 });
 
 print("Filter", function(){
-	//implement
-})
+	function filter(list, predicate){
+		var result = [];
+		for(var i=0;i < list.length; i++)
+			if (predicate(list[i]))
+				result.push(list[i]);
+		return result;
+	}
+	var costlyProductPredicate = function(p){
+			return p.cost > 50;
+		};
+	var negateProductPredicate = function(productPredicate){
+		return function(p){
+			return !productPredicate(p);
+		}
+	}
+	var negate = function(predicate){
+		return function(){
+			return !predicate.apply(this,arguments);
+		}
+	}
+	/*var affordableProductPredicate = function(p){
+		return !costlyProductPredicate(p);
+	}*/
+	var affordableProductPredicate = negateProductPredicate(costlyProductPredicate);
 
-print("GroupBy" function(){
-	//implement
+	print("All costly products [ cost > 50 ]", function(){
+		var costlyProductPredicate = function(p){
+			return p.cost > 50;
+		};
+		var allCostlyProducts = filter(products, costlyProductPredicate);
+		console.table(allCostlyProducts);
+	});
+	var category1ProductPredicate = function(p){
+			return p.category === 1;
+		};
+	var allExpectCategory1ProductPredicate = function(p){
+		return !category1ProductPredicate(p);
+	}
+	print("All category 1 products", function(){
+		
+		var allCategory1Products = filter(products, category1ProductPredicate);
+		console.table(allCategory1Products);
+	});
+});
+
+print("GroupBy", function(){
+	function groupBy(list, keySelector){
+		var result = {};
+		for(var i=0; i<list.length; i++){
+			var key = keySelector(list[i]);
+			if (typeof result[key] === "undefined") result[key] = [];
+			result[key].push(list[i]);
+		}
+		return result;
+	}
+	var categoryKeySelector = function(p){ return p.category; };
+	var productsByCategory = groupBy(products, categoryKeySelector);
+	console.log(productsByCategory);
+
+	var costKeySelector = function(p){ return p.cost > 50 ? "costly" : "affordable" };
+	var productsByCost = groupBy(products, costKeySelector);
+	console.log(productsByCost);
+
 })
